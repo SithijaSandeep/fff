@@ -35,13 +35,15 @@ if uploaded_file is not None:
     
     st.write("👁️ Predicting...")
     
-    # 4. Preprocessing
+   # 4. Preprocessing (Training code එකට 100% සමාන කිරීම)
     img_resized = image.resize((160, 160))
     img_array = tf.keras.preprocessing.image.img_to_array(img_resized)
-    img_array = tf.expand_dims(img_array, 0) # Batch dimension එක එකතු කිරීම
+    img_array = tf.expand_dims(img_array, 0) # (1, 160, 160, 3)
     
-    # Cast and Preprocess
+    # IMPORTANT FIX: Training එකේ Rescaling(scale=1.0) එකට match වෙන්න shape/type හදාගැනීම
     img_array = tf.cast(img_array, tf.float32)
+    
+    # MobileNetV2 preprocessing එක කෙලින්ම run කිරීම
     img_array = preprocess_input(img_array)
 # ============================================================
     # 5. Model Prediction (Advanced Debug Mode)
