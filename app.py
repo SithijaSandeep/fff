@@ -43,27 +43,26 @@ if uploaded_file is not None:
     # Cast and Preprocess
     img_array = tf.cast(img_array, tf.float32)
     img_array = preprocess_input(img_array)
-    
-  # ============================================================
-    # 5. Model Prediction (Diagnostic Mode)
+# ============================================================
+    # 5. Model Prediction (Advanced Debug Mode)
     # ============================================================
     predictions = model.predict(img_array)
+    raw_probabilities = predictions[0] # 1D array eka gannava
     
-    # Model eka dena raw numbers okkoma screen eke print karanna 👇
-    st.write("Raw Model Output Array:", predictions)
-    st.write("After predictions[0]:", predictions[0])
+    # Hamama class ekatama model eken labunu values percentage vidiyatama screen eke penuvima:
+    st.write("--- 🔍 Debug: Model Predictions for Each Class ---")
+    for idx, name in enumerate(class_names):
+        st.write(f"Class Index {idx} ({name}): **{raw_probabilities[idx]*100:.2f}%**")
+    st.write("------------------------------------------------")
     
-    predicted_index = np.argmax(predictions[0]) 
-    st.write("Predicted Index:", predicted_index)
-    
+    # Real Prediction Logic
+    predicted_index = np.argmax(raw_probabilities) 
     predicted_class = class_names[predicted_index]
-    confidence = 100 * np.max(predictions[0])
+    confidence = 100 * raw_probabilities[predicted_index] 
     
     # ============================================================
     # 6. Show Results
     # ============================================================
-    st.subheader(f"Prediction: **{predicted_class}**")
-    
-    # Confidence එක 0-100 අතර integer එකක් විය යුතු නිසා int() කලා
+    st.subheader(f"Final Prediction: **{predicted_class}**")
     st.progress(int(confidence))
     st.write(f"Confidence: **{confidence:.2f}%**")
