@@ -34,24 +34,32 @@ if uploaded_file is not None:
     
     st.write("👁️ Predicting...")
     
-    # 4. Preprocessing (Oyage training code එකේ විදියටම)
-    # Image එක MobileNetV2 එකට ඕන 160x160 size එකට resize කිරීම
+    # 4. Preprocessing
     img_resized = image.resize((160, 160))
     img_array = tf.keras.preprocessing.image.img_to_array(img_resized)
-    img_array = tf.expand_dims(img_array, 0) # Batch dimension එක එකතු කිරීම (1, 160, 160, 3)
+    img_array = tf.expand_dims(img_array, 0) # Batch dimension එක එකතු කිරීම
     
     # Cast and Preprocess
     img_array = tf.cast(img_array, tf.float32)
     img_array = preprocess_input(img_array)
     
-    # 5. Model Prediction
+    # ============================================================
+    # 5. Model Prediction (මෙන්න මේ කොටස තමයි නිවැරදි කලේ 👇)
+    # ============================================================
     predictions = model.predict(img_array)
-    score = tf.nn.softmax(predictions[0]) # Softmax output
     
-    predicted_class = class_names[np.argmax(predictions)]
-    confidence = 100 * np.max(predictions) # Categorical crossentropy + Softmax නිසා kelinma probability ගන්න පුළුවන්
+    # [0] දැම්මාම තමයි පළවෙනි image එකට අදාළ 1D array එක ලැබෙන්නේ
+    predicted_index = np.argmax(predictions[0]) 
+    predicted_class = class_names[predicted_index]
     
+    # Confidence එකත් predictions[0] එකෙන්ම ගන්නවා
+    confidence = 100 * np.max(predictions[0]) 
+    
+    # ============================================================
     # 6. Show Results
+    # ============================================================
     st.subheader(f"Prediction: **{predicted_class}**")
+    
+    # Confidence එක 0-100 අතර integer එකක් විය යුතු නිසා int() කලා
     st.progress(int(confidence))
     st.write(f"Confidence: **{confidence:.2f}%**")
