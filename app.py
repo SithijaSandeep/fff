@@ -16,6 +16,7 @@ def load_my_model():
     model = tf.keras.models.load_model("student_mobilenetv2_transfer_learning.keras")
     with open("class_names.json", "r") as f:
         classes = json.load(f)
+        classes = sorted(list(set(classes)))
     return model, classes
 
 try:
