@@ -43,17 +43,20 @@ if uploaded_file is not None:
     img_array = tf.cast(img_array, tf.float32)
     img_array = preprocess_input(img_array)
     
-    # ============================================================
-    # 5. Model Prediction (මෙන්න මේ කොටස තමයි නිවැරදි කලේ 👇)
+  # ============================================================
+    # 5. Model Prediction (Diagnostic Mode)
     # ============================================================
     predictions = model.predict(img_array)
     
-    # [0] දැම්මාම තමයි පළවෙනි image එකට අදාළ 1D array එක ලැබෙන්නේ
-    predicted_index = np.argmax(predictions[0]) 
-    predicted_class = class_names[predicted_index]
+    # Model eka dena raw numbers okkoma screen eke print karanna 👇
+    st.write("Raw Model Output Array:", predictions)
+    st.write("After predictions[0]:", predictions[0])
     
-    # Confidence එකත් predictions[0] එකෙන්ම ගන්නවා
-    confidence = 100 * np.max(predictions[0]) 
+    predicted_index = np.argmax(predictions[0]) 
+    st.write("Predicted Index:", predicted_index)
+    
+    predicted_class = class_names[predicted_index]
+    confidence = 100 * np.max(predictions[0])
     
     # ============================================================
     # 6. Show Results
